@@ -1,0 +1,30 @@
+name: Sync to Duplicate Repo
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '*/1 * * * *' # This runs the action every minute
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Git
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+
+    - name: Add remote
+      run: git remote add duplicate https://github.com/adamoneco/Onecobackup.git
+
+    - name: Push to duplicate repository
+      run: |
+        git push --force https://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@github.com/adamoneco/Onecobackup.git main
