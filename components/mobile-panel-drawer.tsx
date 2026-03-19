@@ -1,6 +1,12 @@
 "use client";
 
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { MapPanel } from "@/components/map-panel";
 import type { MapLocation, Trail, LocationCategory } from "@/types/map";
@@ -48,6 +54,10 @@ export function MobilePanelDrawer({
         </Button>
       </DrawerTrigger>
       <DrawerContent className="h-[85vh]">
+        <DrawerTitle className="sr-only">Explore Map Drawer</DrawerTitle>
+        <DrawerDescription className="sr-only">
+          Browse map filters, search locations, and view location details.
+        </DrawerDescription>
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b px-4 py-3">
             <h2 className="font-semibold">Explore Map</h2>

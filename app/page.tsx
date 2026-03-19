@@ -186,20 +186,17 @@ export default function HomePage() {
       <header className="print-header shrink-0 border-b bg-background">
         <div className="flex h-14 items-center justify-between px-4">
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowMap(false)}
-              className="gap-2 print:hidden"
-            >
-              <Menu className="h-4 w-4" />
-              <span className="hidden sm:inline">Back</span>
-            </Button>
-            <div className="hidden h-6 w-px bg-border sm:block print:hidden" />
             <div>
-              <h1 className="text-sm font-semibold sm:text-base">
-                Kirkpatrick Farms Community Map
-              </h1>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowMap(false)}
+                className="gap-2 print:hidden"
+              >
+                <h1 className="text-sm font-semibold sm:text-base">
+                  Kirkpatrick Farms Community Map
+                </h1>
+              </Button>
               <p className="hidden text-xs text-muted-foreground print:block">
                 Interactive community amenities map
               </p>
