@@ -38,7 +38,7 @@ const createBaseTileLayer = (style: MapStyle) => {
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       {
         attribution:
-          "Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+          "",
         maxNativeZoom: 19,
         maxZoom: MAX_MAP_ZOOM,
       }
@@ -350,6 +350,9 @@ export function CommunityMap({
         }
         .leaflet-container {
           font-family: inherit;
+        }
+        .leaflet-control-attribution {
+          display: none;
         }
       `}</style>
     </div>
