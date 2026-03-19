@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { communityMapData } from "@/data/community-map-data";
 import { CATEGORY_INFO, type MapLocation, type Trail, type LocationCategory } from "@/types/map";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { RotateCcw, ZoomIn, ZoomOut, Layers } from "lucide-react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -26,6 +26,25 @@ interface CommunityMapProps {
   onResetView: () => void;
 }
 
+type MapStyle = "street" | "satellite";
+
+const createBaseTileLayer = (style: MapStyle) => {
+  if (style === "satellite") {
+    return L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        attribution:
+          "Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+      }
+    );
+  }
+
+  return L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  });
+};
+
 export function CommunityMap({
   selectedLocation,
   onLocationSelect,
@@ -38,7 +57,9 @@ export function CommunityMap({
   const polylinesRef = useRef<L.Polyline[]>([]);
   const boundaryRef = useRef<L.Polygon | null>(null);
   const boundaryMaskRef = useRef<L.Polygon | null>(null);
+  const baseTileLayerRef = useRef<L.TileLayer | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
+  const [mapStyle, setMapStyle] = useState<MapStyle>("street");
 
   // Initialize map
   useEffect(() => {
@@ -53,15 +74,15 @@ export function CommunityMap({
       center: communityMapData.center,
       zoom: communityMapData.zoom,
       zoomControl: false,
-      maxBounds: boundaryBounds.pad(0.2),
-      maxBoundsViscosity: 0.8,
+      maxBounds: boundaryBounds.pad(0.05),
+      maxBoundsViscosity: 1,
       minZoom: 14,
       maxZoom: 18,
     });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+    const baseLayer = createBaseTileLayer("street");
+    baseLayer.addTo(map);
+    baseTileLayerRef.current = baseLayer;
 
     // Dim areas outside community while keeping the interior clear.
     // This provides a "community-only" focus even before final boundary confirmation.
@@ -74,7 +95,7 @@ export function CommunityMap({
     const boundaryMask = L.polygon([worldRing, boundaryCoords], {
       stroke: false,
       fillColor: "#111827",
-      fillOpacity: 0.35,
+      fillOpacity: 1,
       interactive: false,
     }).addTo(map);
     boundaryMaskRef.current = boundaryMask;
@@ -101,8 +122,22 @@ export function CommunityMap({
       map.remove();
       mapRef.current = null;
       boundaryMaskRef.current = null;
+      baseTileLayerRef.current = null;
     };
   }, []);
+
+  // Switch between street and satellite base layers
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    if (baseTileLayerRef.current) {
+      baseTileLayerRef.current.remove();
+    }
+
+    const nextLayer = createBaseTileLayer(mapStyle);
+    nextLayer.addTo(mapRef.current);
+    baseTileLayerRef.current = nextLayer;
+  }, [mapStyle]);
 
   // Update markers based on filters
   useEffect(() => {
@@ -207,12 +242,25 @@ export function CommunityMap({
     onResetView();
   };
 
+  const toggleMapStyle = () => {
+    setMapStyle((prev) => (prev === "street" ? "satellite" : "street"));
+  };
+
   return (
     <div className="relative h-full w-full print-map-container">
       <div ref={mapContainerRef} className="h-full w-full" />
 
       {/* Map Controls */}
       <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2 print:hidden">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={toggleMapStyle}
+          className="h-9 gap-1.5 bg-background px-3 text-xs shadow-md"
+        >
+          <Layers className="h-3.5 w-3.5" />
+          {mapStyle === "street" ? "Satellite" : "Street"}
+        </Button>
         <Button
           variant="secondary"
           size="icon"
