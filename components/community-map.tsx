@@ -58,6 +58,23 @@ const createBaseTileLayer = (style: MapStyle) => {
   });
 };
 
+const createSatelliteLabelsLayer = () =>
+  L.tileLayer(
+    "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}",
+    {
+      attribution:
+        "Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ",
+      maxNativeZoom: 19,
+      maxZoom: MAX_MAP_ZOOM,
+      noWrap: true,
+      keepBuffer: 6,
+      // Keep labels inside the same clipped pane as the base tiles.
+      pane: "tilePane",
+      opacity: 1,
+      className: "street-labels-layer",
+    }
+  );
+
 export function CommunityMap({
   selectedLocation,
   onLocationSelect,
@@ -70,6 +87,7 @@ export function CommunityMap({
   const polylinesRef = useRef<L.Polyline[]>([]);
   const boundaryRef = useRef<L.Polygon | null>(null);
   const baseTileLayerRef = useRef<L.TileLayer | null>(null);
+  const labelsLayerRef = useRef<L.TileLayer | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyle>("satellite");
 
@@ -142,6 +160,9 @@ export function CommunityMap({
     const baseLayer = createBaseTileLayer("satellite");
     baseLayer.addTo(map);
     baseTileLayerRef.current = baseLayer;
+    const labelsLayer = createSatelliteLabelsLayer();
+    labelsLayer.addTo(map);
+    labelsLayerRef.current = labelsLayer;
     syncTileClip();
     setTilePaneOpacity(1);
     map.on("movestart", beginMotionFade);
@@ -200,6 +221,7 @@ export function CommunityMap({
       map.remove();
       mapRef.current = null;
       baseTileLayerRef.current = null;
+      labelsLayerRef.current = null;
     };
   }, []);
 
@@ -232,10 +254,20 @@ export function CommunityMap({
     if (baseTileLayerRef.current) {
       baseTileLayerRef.current.remove();
     }
+    if (labelsLayerRef.current) {
+      labelsLayerRef.current.remove();
+      labelsLayerRef.current = null;
+    }
 
     const nextLayer = createBaseTileLayer(mapStyle);
     nextLayer.addTo(mapRef.current);
     baseTileLayerRef.current = nextLayer;
+
+    if (mapStyle === "satellite") {
+      const labelsLayer = createSatelliteLabelsLayer();
+      labelsLayer.addTo(mapRef.current);
+      labelsLayerRef.current = labelsLayer;
+    }
   }, [mapStyle]);
 
   // Update markers based on filters
@@ -434,6 +466,9 @@ export function CommunityMap({
         .leaflet-container {
           font-family: inherit;
           background: ${OUTSIDE_MASK_COLOR};
+        }
+        .leaflet-tile.street-labels-layer {
+          filter: contrast(1.25) saturate(1.1);
         }
         .leaflet-control-attribution {
           display: none;

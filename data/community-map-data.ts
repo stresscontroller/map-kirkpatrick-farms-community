@@ -9,7 +9,7 @@ const locations: MapLocation[] = [
     id: "cemetery",
     name: "Foley Family Cemetery",
     category: "cemetery",
-    coordinates: [38.914833, -77.561707],
+    coordinates: [38.914840, -77.561602],
     description: "Small preserved 19th-century burial site in a wooded area, with a few original gravestones, quietly reflecting the land’s early history.",
     address: "Historic District",
     images: [
