@@ -44,6 +44,8 @@ export function MapPanel({
       "tot-lot": ["tot lot", "tot lots", "playground", "playgrounds"],
       "tennis-court": ["tennis", "court", "tennis court", "tennis courts"],
       "basketball-court": ["basketball", "court", "basketball court"],
+      gazebo: ["gazebo", "gazebos", "pavilion", "shelter"],
+      bridge: ["bridge", "bridges", "footbridge", "crossing"],
     };
 
     // Filter by active categories

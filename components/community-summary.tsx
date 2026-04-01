@@ -11,6 +11,8 @@ import {
   Building,
   Landmark,
   Flower2,
+  Umbrella,
+  Waypoints,
   Footprints,
 } from "lucide-react";
 
@@ -23,6 +25,8 @@ const iconMap = {
   building: Building,
   landmark: Landmark,
   flower2: Flower2,
+  umbrella: Umbrella,
+  waypoints: Waypoints,
   footprints: Footprints,
 };
 
@@ -46,6 +50,8 @@ export function CommunitySummary({
     { category: "clubhouse", label: "Clubhouse" },
     { category: "cemetery", label: "Cemetery" },
     { category: "pollinator-garden", label: "Garden" },
+    { category: "gazebo", label: "Gazebos" },
+    { category: "bridge", label: "Bridges" },
     { category: "trail", label: "Walking Trail" },
   ];
 

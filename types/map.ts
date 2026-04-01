@@ -7,6 +7,8 @@ export type LocationCategory =
   | "clubhouse"
   | "cemetery"
   | "pollinator-garden"
+  | "gazebo"
+  | "bridge"
   | "trail";
 
 export interface MapLocation {
@@ -99,6 +101,18 @@ export const CATEGORY_INFO: Record<LocationCategory, CategoryInfo> = {
     label: "Pollinator Garden",
     color: "#10b981",
     icon: "flower2",
+  },
+  gazebo: {
+    id: "gazebo",
+    label: "Gazebo",
+    color: "#0f766e",
+    icon: "umbrella",
+  },
+  bridge: {
+    id: "bridge",
+    label: "Bridge",
+    color: "#a16207",
+    icon: "waypoints",
   },
   trail: {
     id: "trail",
